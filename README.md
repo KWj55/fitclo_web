@@ -1,13 +1,14 @@
 # fitclo_web
 
 github에 모델의 업로드를 시도했지만 시간이 너무 오래 걸려 ckpt파일과 데이터셋파일들은 외부 링크로 업로드하였습니다.
+
 [ckpts파일 다운로드](https://drive.google.com/file/d/1cIRS4SfAXGBGQwVyEUSKfmQ1jskQGrLp/view?usp=sharing)
 [dataset파일 다운로드](https://drive.google.com/file/d/1o_SN2t765aiIwe115Pe8dzE8zAhknIvi/view?usp=sharing)
 
 
 
 # 파일 및 폴더 배치 안내
-추가될 링크를 통해  ckpts와 webserver_datasets압축파일을 받은 뒤 
+추가된 링크를 통해  ckpts와 webserver_datasets압축파일을 받은 뒤 
 아래 지침에 따라 압축 해제된 파일과 폴더를 올바른 위치에 배치해 주세요.
 
 ## 1. `ckpts` 폴더 배치

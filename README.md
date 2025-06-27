@@ -1,8 +1,10 @@
 # fitclo_web 
 한국 폴리텍대학 대전 캠퍼스 인공지능과에서 2025년도에 시작된 AI(diffision모델)기반 온라인 가상피팅 프로젝트 입니다.
 
-#사용 방법
-하단의 추가 파일들의 다운로드, 압축 해제 완료 후 requirements를 통해 패키지들을 다운로드 후 fitclo_web\fitclo\VSViton_serverTest\WebServer2경로의 app.py를 작동시키면 됩니다.
+# 사용 방법
+하단의 추가 파일들의 다운로드, 압축 해제 완료 후 requirements를 통해 패키지들을 다운로드하신 다음
+
+fitclo_web\fitclo\VSViton_serverTest\WebServer2경로의 app.py를 작동시키면 됩니다.
 
 
 # 추가 파일들

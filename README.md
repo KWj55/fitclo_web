@@ -9,7 +9,7 @@ fitclo_web\fitclo\VSViton_serverTest\WebServer2경로의 app.py를 작동시키�
 
 # 추가 파일들
 
-ckpt파일과 데이터셋파일들은 외부 링크로 업로드되어있습니다.
+ckpt파일과 데이터셋파일들은 하단 링크를 통해 다운로드 하면 됩니다.
 
 [ckpts파일 다운로드](https://drive.google.com/file/d/1cIRS4SfAXGBGQwVyEUSKfmQ1jskQGrLp/view?usp=sharing)
 

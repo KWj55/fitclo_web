@@ -1,0 +1,52 @@
+# PyTorch 및 관련 패키지 (CUDA 11.7 기준)
+torch==2.0.0+cu117
+torchvision==0.15.1+cu117
+torchaudio==2.0.1 --index-url https://download.pytorch.org/whl/cu117
+
+# PyTorch Lightning
+pytorch-lightning==1.5.0
+
+# 데이터 및 이미지 처리
+opencv-python==4.7.0.72
+Pillow
+numpy
+scipy==1.10.1
+matplotlib
+
+# 기타 ML/딥러닝 유틸
+einops
+albumentations
+
+# 설정 및 로깅
+omegaconf
+tqdm
+
+# transformers 및 huggingface 관련
+transformers==4.33.2
+huggingface_hub==0.19.3
+
+# diffusion 및 clip
+diffusers==0.20.2
+open-clip-torch==2.19.0
+xformers==0.0.19
+triton==2.0.0
+
+# FastAPI 및 웹서버
+fastapi
+uvicorn
+jinja2
+python-multipart
+pymysql
+
+# 기타
+ipython
+
+# (필요시) MySQL 연동
+# mysqlclient
+
+# (윈도우에서 필요시)
+# pywin32
+
+# (추가적으로 필요할 수 있는 패키지)
+# scikit-learn
+# requests

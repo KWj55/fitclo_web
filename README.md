@@ -3,6 +3,7 @@
 github에 모델의 업로드를 시도했지만 시간이 너무 오래 걸려 ckpt파일과 데이터셋파일들은 외부 링크로 업로드하였습니다.
 
 [ckpts파일 다운로드](https://drive.google.com/file/d/1cIRS4SfAXGBGQwVyEUSKfmQ1jskQGrLp/view?usp=sharing)
+
 [dataset파일 다운로드](https://drive.google.com/file/d/1o_SN2t765aiIwe115Pe8dzE8zAhknIvi/view?usp=sharing)
 
 

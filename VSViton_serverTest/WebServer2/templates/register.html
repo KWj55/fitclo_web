@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - FITCLO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/register.css">
+</head>
+<body>
+    <div class="container">
+        <div class="register-card">
+            <div class="register-header">
+                <h1 class="register-title">FITCLO 회원가입</h1>
+            </div>
+            <form id="register-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="username">사용자명</label>
+                        <input type="text" id="username" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">이메일</label>
+                        <input type="email" id="email" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">비밀번호 (6자 이상)</label>
+                        <input type="password" id="password" class="form-input" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="name">이름</label>
+                        <input type="text" id="name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="phone_number">전화번호</label>
+                        <input type="text" id="phone_number" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="birth_date">생년월일</label>
+                        <input type="date" id="birth_date" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="gender">성별</label>
+                        <select id="gender" class="form-input" required>
+                            <option value="male">남성</option>
+                            <option value="female">여성</option>
+                            <option value="other">기타</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="height_cm">키 (cm)</label>
+                        <input type="number" id="height_cm" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="weight_kg">몸무게 (kg)</label>
+                        <input type="number" id="weight_kg" class="form-input" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label" for="address">주소</label>
+                        <textarea id="address" class="form-input" required></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="register-btn">가입하기</button>
+            </form>
+            <div class="login-link">
+                이미 계정이 있으신가요? <a href="/login">로그인</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("register-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const formData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                name: document.getElementById('name').value,
+                phone_number: document.getElementById('phone_number').value,
+                birth_date: document.getElementById('birth_date').value,
+                gender: document.getElementById('gender').value,
+                height_cm: parseInt(document.getElementById('height_cm').value),
+                weight_kg: parseInt(document.getElementById('weight_kg').value),
+                address: document.getElementById('address').value
+            };
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
+                    window.location.href = '/login';
+                } else {
+                    alert(data.detail || '회원가입 중 오류가 발생했습니다.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('회원가입 중 오류가 발생했습니다.');
+            }
+        });
+    </script>
+</body>
+</html>

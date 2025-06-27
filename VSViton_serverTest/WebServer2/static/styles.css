@@ -1,0 +1,141 @@
+/* 기본 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 50px;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+input {
+    margin: 10px;
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px;
+    background-color: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: darkblue;
+}
+
+/* 헤더 스타일 */
+header {
+    background: #222;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* 히어로 섹션 */
+.hero {
+    text-align: center;
+    padding: 40px;
+    background: #4CAF50;
+    color: white;
+    font-size: 20px;
+}
+
+/* 상품 리스트 */
+.products {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px;
+    flex-wrap: wrap;
+}
+
+.product {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 220px;
+}
+
+.product img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.add-to-cart {
+    background: #ff5733;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-to-cart:hover {
+    background: #e64a19;
+}
+
+/* 로그인 & 회원가입 폼 스타일 */
+form {
+    background: white;
+    padding: 20px;
+    display: inline-block;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+p#message {
+    margin-top: 15px;
+    font-weight: bold;
+    color: red;
+}
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 400px;
+    background-color: #f9f9f9;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.card li {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #444;
+}

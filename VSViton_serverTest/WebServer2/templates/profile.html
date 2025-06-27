@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보 - FITCLO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/profile.css">
+</head>
+<body>
+    <div class="nav-bar">
+        <div class="nav-title">FITCLO 내 정보</div>
+        <div class="nav-buttons">
+            <a href="/fitting" class="nav-btn">피팅으로</a>
+            <button class="nav-btn red" onclick="logout()">로그아웃</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <h1 class="profile-title">{{ user.name }}님의 프로필</h1>
+                <button class="edit-btn" onclick="toggleEdit()">정보 수정</button>
+            </div>
+            <form id="profile-form" onsubmit="updateProfile(event)">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">사용자 이름</div>
+                        <div class="info-value">
+                            <input type="text" id="username" value="{{ user.username }}" required disabled>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">이메일</div>
+                        <div class="info-value">
+                            <input type="email" id="email" value="{{ user.email }}" required disabled>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">전화번호</div>
+                        <div class="info-value">
+                            <input type="text" id="phone_number" value="{{ user.phone_number }}" required disabled>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">생년월일</div>
+                        <div class="info-value">
+                            <input type="date" id="birth_date" value="{{ user.birth_date }}" required disabled>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">성별</div>
+                        <div class="info-value readonly">{{ user.gender }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">이름</div>
+                        <div class="info-value readonly">{{ user.name }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">키</div>
+                        <div class="info-value">
+                            <input type="number" id="height_cm" value="{{ user.height_cm }}" required disabled>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">체중</div>
+                        <div class="info-value">
+                            <input type="number" id="weight_kg" value="{{ user.weight_kg }}" required disabled>
+                        </div>
+                    </div>
+                    <div class="info-item" style="grid-column: span 2;">
+                        <div class="info-label">주소</div>
+                        <div class="info-value">
+                            <textarea id="address" required disabled>{{ user.address }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="save-btn" disabled>저장하기</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let isEditMode = false;
+
+        function toggleEdit() {
+            isEditMode = !isEditMode;
+            const inputs = document.querySelectorAll('input, textarea');
+            const saveBtn = document.querySelector('.save-btn');
+            const editBtn = document.querySelector('.edit-btn');
+
+            inputs.forEach(input => {
+                if (!input.parentElement.classList.contains('readonly')) {
+                    input.disabled = !isEditMode;
+                }
+            });
+
+            saveBtn.disabled = !isEditMode;
+            editBtn.textContent = isEditMode ? '수정 취소' : '정보 수정';
+            editBtn.style.backgroundColor = isEditMode ? '#dc3545' : '#28a745';
+        }
+
+        async function updateProfile(event) {
+            event.preventDefault();
+
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                window.location.href = "/login";
+                return;
+            }
+
+            const formData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                phone_number: document.getElementById('phone_number').value,
+                birth_date: document.getElementById('birth_date').value,
+                height_cm: parseInt(document.getElementById('height_cm').value),
+                weight_kg: parseInt(document.getElementById('weight_kg').value),
+                address: document.getElementById('address').value
+            };
+
+            try {
+                const response = await fetch('/update_profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('프로필이 성공적으로 업데이트되었습니다.');
+                    location.reload();
+                } else {
+                    alert(data.detail || '프로필 업데이트에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('서버 오류가 발생했습니다.');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("access_token");
+            window.location.href = "/";
+        }
+
+        // 페이지 로드 시 토큰 체크
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                window.location.href = "/login";
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가상 피팅 - FITCLO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/fitting.css">
+</head>
+<body>
+    <div class="nav-bar">
+        <div class="nav-title">FITCLO 가상 피팅</div>
+        <div class="nav-buttons">
+            <a href="/profile" class="nav-btn">내정보</a>
+            <button class="nav-btn red" onclick="logout()">로그아웃</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="fitting-container">
+            <div class="section">
+                <h2>인물 이미지</h2>
+                <div class="image-box" onclick="document.getElementById('personInput').click()">
+                    <input type="file" id="personInput" accept="image/*" style="display: none;">
+                    <img id="personPreview" style="display: none;">
+                    <div id="personPlaceholder">
+                        클릭하여 이미지 업로드<br>
+                        또는<br>
+                        아래에서 선택
+                </div>
+                </div>
+                <div class="image-grid" id="personSamples"></div>
+                <div class="pagination" id="personPagination">
+                    <button class="page-btn" onclick="changePage('person', 'prev')">&lt; 이전</button>
+                    <span id="personPageInfo">1 / 1</span>
+                    <button class="page-btn" onclick="changePage('person', 'next')">다음 &gt;</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>의상 이미지</h2>
+                <div class="image-box" onclick="document.getElementById('clothInput').click()">
+                    <input type="file" id="clothInput" accept="image/*" style="display: none;">
+                    <img id="clothPreview" style="display: none;">
+                    <div id="clothPlaceholder">
+                        클릭하여 이미지 업로드<br>
+                        또는<br>
+                        아래에서 선택
+                </div>
+                </div>
+                <div class="image-grid" id="clothSamples"></div>
+                <div class="pagination" id="clothPagination">
+                    <button class="page-btn" onclick="changePage('cloth', 'prev')">&lt; 이전</button>
+                    <span id="clothPageInfo">1 / 1</span>
+                    <button class="page-btn" onclick="changePage('cloth', 'next')">다음 &gt;</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>피팅 결과</h2>
+                <div class="result-box">
+                    <div id="loadingSpinner" style="display: none;">처리중...</div>
+                </div>
+                <button id="tryOnButton" class="run-button" disabled>가상 피팅 시작</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let personFile = null;
+        let clothFile = null;
+        let currentPage = {
+            person: 1,
+            cloth: 1
+        };
+        let totalPages = {
+            person: 1,
+            cloth: 1
+        };
+
+        // 샘플 이미지 로드
+        async function loadSampleImages(page = 1) {
+            try {
+                const response = await fetch(`/get-sample-images?page=${page}`);
+                if (!response.ok) throw new Error('샘플 이미지 로드 실패');
+                
+                const data = await response.json();
+                console.log('Received sample images:', data);
+                
+                // 전체 페이지 수 업데이트
+                totalPages.person = data.total_person_pages;
+                totalPages.cloth = data.total_cloth_pages;
+                
+                // 페이지 정보 업데이트
+                document.getElementById('personPageInfo').textContent = `${currentPage.person} / ${totalPages.person}`;
+                document.getElementById('clothPageInfo').textContent = `${currentPage.cloth} / ${totalPages.cloth}`;
+                
+                // 인물 이미지 표시
+                const personSamples = document.getElementById('personSamples');
+                personSamples.innerHTML = ''; // 기존 이미지 제거
+                data.person_images.forEach(path => {
+                    const img = document.createElement('img');
+                    img.className = 'grid-image loading';
+                    img.onload = () => {
+                        img.classList.remove('loading');
+                    };
+                    img.onerror = () => {
+                        img.classList.remove('loading');
+                        img.classList.add('error');
+                        console.error('Failed to load image:', path);
+                    };
+                    img.src = path;
+                    img.onclick = () => selectSampleImage(path, 'person');
+                    personSamples.appendChild(img);
+                });
+
+                // 의상 이미지 표시
+                const clothSamples = document.getElementById('clothSamples');
+                clothSamples.innerHTML = ''; // 기존 이미지 제거
+                data.cloth_images.forEach(path => {
+                    const img = document.createElement('img');
+                    img.className = 'grid-image loading';
+                    img.onload = () => {
+                        img.classList.remove('loading');
+                    };
+                    img.onerror = () => {
+                        img.classList.remove('loading');
+                        img.classList.add('error');
+                        console.error('Failed to load image:', path);
+                    };
+                    img.src = path;
+                    img.onclick = () => selectSampleImage(path, 'cloth');
+                    clothSamples.appendChild(img);
+                });
+            } catch (error) {
+                console.error('샘플 이미지 로드 중 오류:', error);
+            }
+        }
+
+        // 페이지 변경 함수
+        async function changePage(type, direction) {
+            const newPage = direction === 'next' 
+                ? Math.min(currentPage[type] + 1, totalPages[type])
+                : Math.max(currentPage[type] - 1, 1);
+            
+            if (newPage !== currentPage[type]) {
+                currentPage[type] = newPage;
+                await loadSampleImages(newPage);
+            }
+        }
+
+        // 페이지 로드 시 샘플 이미지 로드
+        window.addEventListener('load', () => loadSampleImages(1));
+
+        async function selectSampleImage(path, type) {
+            // 이전 선택 해제
+            const container = document.getElementById(`${type}Samples`);
+            container.querySelectorAll('.grid-image').forEach(img => {
+                img.classList.remove('selected');
+            });
+
+            // 새로운 이미지 선택
+            const selectedImg = Array.from(container.children).find(img => 
+                img.src.endsWith(path.replace(/^\/static\//, ''))
+            );
+            if (selectedImg) {
+                selectedImg.classList.add('selected');
+            }
+
+            try {
+                const response = await fetch('/select-sample-image', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        image_path: path,
+                        type: type
+                    })
+                });
+
+                if (!response.ok) throw new Error('샘플 이미지 선택 실패');
+
+                const preview = document.getElementById(`${type}Preview`);
+                const placeholder = document.getElementById(`${type}Placeholder`);
+                
+                preview.onload = () => {
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+                preview.onerror = () => {
+                    console.error('Failed to load preview image:', path);
+                    preview.style.display = 'none';
+                    placeholder.style.display = 'block';
+                    alert('이미지 로드에 실패했습니다.');
+                };
+                preview.src = path;
+                    
+                    if (type === 'person') {
+                    personFile = path;
+                    } else {
+                    clothFile = path;
+                }
+
+                updateTryOnButton();
+            } catch (error) {
+                console.error('샘플 이미지 선택 중 오류:', error);
+                alert('이미지 선택 중 오류가 발생했습니다.');
+            }
+        }
+
+        function previewImage(file, previewId) {
+            const preview = document.getElementById(previewId);
+            const placeholder = document.getElementById(previewId.replace('Preview', 'Placeholder'));
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+            }
+
+            reader.readAsDataURL(file);
+        }
+
+        function updateTryOnButton() {
+            const button = document.getElementById('tryOnButton');
+            button.disabled = !(personFile && clothFile);
+        }
+
+        document.getElementById('personInput').addEventListener('change', async function(e) {
+            if (e.target.files && e.target.files[0]) {
+                personFile = e.target.files[0];
+                previewImage(personFile, 'personPreview');
+                await saveSelectedImage(personFile, 'person');
+                updateTryOnButton();
+            }
+        });
+
+        document.getElementById('clothInput').addEventListener('change', async function(e) {
+            if (e.target.files && e.target.files[0]) {
+                clothFile = e.target.files[0];
+                previewImage(clothFile, 'clothPreview');
+                await saveSelectedImage(clothFile, 'cloth');
+                updateTryOnButton();
+            }
+        });
+
+        async function saveSelectedImage(file, type) {
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append(type, file);
+
+            try {
+                const response = await fetch('/save-selected-images', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('이미지 저장 실패');
+                }
+
+                const result = await response.json();
+                console.log(`${type} 이미지 저장 성공:`, result);
+            } catch (error) {
+                console.error(`${type} 이미지 저장 중 오류:`, error);
+                alert('이미지 저장 중 오류가 발생했습니다.');
+            }
+        }
+
+        document.getElementById('tryOnButton').addEventListener('click', async function() {
+            if (!personFile || !clothFile) {
+                alert('인물 이미지와 의상 이미지를 모두 선택해주세요.');
+                return;
+            }
+            
+            try {
+                const button = document.getElementById('tryOnButton');
+                const loadingSpinner = document.getElementById('loadingSpinner');
+                const originalText = button.textContent;
+                
+                button.disabled = true;
+                loadingSpinner.style.display = 'block';
+
+                const response = await fetch('/try-on', {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    throw new Error('가상 피팅 실패');
+                }
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    const resultBox = document.querySelector('.result-box');
+                    const resultImage = document.createElement('img');
+                    resultImage.src = result.result_path;
+                    
+                    // 기존 결과 이미지 제거
+                    const existingImage = resultBox.querySelector('img');
+                    if (existingImage) {
+                        resultBox.removeChild(existingImage);
+                    }
+                    
+                    resultBox.appendChild(resultImage);
+                    resultBox.scrollIntoView({ behavior: 'smooth' });
+                }
+            } catch (error) {
+                console.error('가상 피팅 중 오류:', error);
+                alert('가상 피팅 중 오류가 발생했습니다.');
+            } finally {
+                const button = document.getElementById('tryOnButton');
+                const loadingSpinner = document.getElementById('loadingSpinner');
+                button.disabled = false;
+                loadingSpinner.style.display = 'none';
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem("access_token");
+            window.location.href = "/";
+        }
+
+        // 페이지 로드 시 토큰 체크
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem("access_token");
+            if (!token) {
+                window.location.href = "/login";
+            }
+        });
+    </script>
+</body>
+</html> 

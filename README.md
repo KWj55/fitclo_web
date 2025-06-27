@@ -1,6 +1,13 @@
-# fitclo_web
+# fitclo_web 
+한국 폴리텍대학 대전 캠퍼스 인공지능과에서 2025년도에 시작된 AI(diffision모델)기반 온라인 가상피팅 프로젝트 입니다.
 
-github에 모델의 업로드를 시도했지만 시간이 너무 오래 걸려 ckpt파일과 데이터셋파일들은 외부 링크로 업로드하였습니다.
+#사용 방법
+하단의 추가 파일들의 다운로드, 압축 해제 완료 후 requirements를 통해 패키지들을 다운로드 후 fitclo_web\fitclo\VSViton_serverTest\WebServer2경로의 app.py를 작동시키면 됩니다.
+
+
+# 추가 파일들
+
+ckpt파일과 데이터셋파일들은 외부 링크로 업로드되어있습니다.
 
 [ckpts파일 다운로드](https://drive.google.com/file/d/1cIRS4SfAXGBGQwVyEUSKfmQ1jskQGrLp/view?usp=sharing)
 
@@ -52,5 +59,10 @@ github에 모델의 업로드를 시도했지만 시간이 너무 오래 걸려 
                     └── item_2.jpg
                     └── ... (기타 selectedimage 파일들)
     ```
+
+
+
+
+    
 
 ---
